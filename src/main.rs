@@ -1,26 +1,27 @@
-use brightness::{Brightness, BrightnessDevice};
+use clap::{Args, Parser, Subcommand};
+use brightness::Brightness;
 use futures::TryStreamExt;
-use futures::executor::block_on;
-use clap::Parser;
+use futures::executor;
+mod args;
+use args::{Cli,Commands,SetArgs,};
 
 
-#[derive(Parser, Debug)]
-#[command(author,version,about,long_about = None)]
-pub struct RumosArgs {
-    #[arg(short,long)]
-    set: Option<String>,
-    #[arg(short,long)]
-    increase: Option<String>,
-    #[arg(short,long)]
-    decrease: Option<String>,
+
+fn main() {
+    let cli = Cli::parse();
+    match &cli.command{
+        Commands::Set(percent) => {
+            println!("Set the percentage of brightness to {:?}%", percent.percent);
+        }
+        Commands::Inc(percent) => {
+            println!("Increase the percentage of brightness to {:?}%", percent.percent);
+        }
+        Commands::Dec(percent) => {
+            println!("Decrease the percentage of brightness to {:?}%", percent.percent);
+        }
+    }
 }
 
-fn main(){
-    let args = RumosArgs::parse();
-    println!("{:?}",args);
-/*     let values1 = block_on(control_brightness());  */
-    let values2 = block_on(show_brightness()); 
-}
 
 async fn show_brightness() -> Result<(), brightness::Error> {
     brightness::brightness_devices().try_for_each(|dev| async move {
@@ -32,8 +33,11 @@ async fn show_brightness() -> Result<(), brightness::Error> {
 } 
 
 async fn control_brightness() -> Result<(), brightness::Error> {
+
     brightness::brightness_devices().try_for_each(|mut dev| async move {
-        let di = dev.set(50).await?;
+        let _ = dev.set(90).await?;
+        let (device, level) = (dev.device_name().await?, dev.get().await?);
+        println!("Brightness of device {} is {}%", device, level);
         Ok(())
     }).await
 }
