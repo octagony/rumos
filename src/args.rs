@@ -10,6 +10,8 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Commands {
+    /// Get the brightness level (in percent)
+    Get,
     /// Set the brightness level (in percent)
     Set(SetArgs),
     /// Increase the brightness level (in percent)

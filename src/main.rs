@@ -1,5 +1,4 @@
 use std::error::Error;
-
 use clap::{Args, Parser, Subcommand};
 use brightness::Brightness;
 use futures::TryStreamExt;
@@ -10,6 +9,9 @@ use args::{Cli,Commands,SetArgs,};
 async fn start()->Result<(), Box<dyn Error>>{
     let cli = Cli::parse();
     match &cli.command{
+        Commands::Get=>{
+            show_brightness().await?;
+        }
         Commands::Set(percent) => {
            control_brightness(percent).await?;
         }
@@ -37,13 +39,13 @@ async fn control_brightness(percent:&SetArgs) -> Result<(), brightness::Error> {
 }
 
 
-// async fn show_brightness() -> Result<(), brightness::Error> {
-//     brightness::brightness_devices().try_for_each(|dev| async move {
-//         let name = dev.device_name().await?;
-//         let value = dev.get().await?;
-//         println!("Brightness of device {} is {}%", name, value);
-//         Ok(())
-//     }).await
-// } 
+async fn show_brightness() -> Result<(), brightness::Error> {
+    brightness::brightness_devices().try_for_each(|dev| async move {
+        let name = dev.device_name().await?;
+        let value = dev.get().await?;
+        println!("Brightness of device {} is {}%", name, value);
+        Ok(())
+    }).await
+} 
 
 
