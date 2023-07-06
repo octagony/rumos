@@ -29,8 +29,9 @@ pub async fn increase_or_decrease_brightness(percent:&SetArgs, com:&str ) -> Res
                     return Ok(())
                 }
             }else {
-                if level == 0{
-                    println!("Minimum brightness level is reached (0%)");
+                if percent.percent.unwrap() > 100{
+                    set_min_level(dev).await?;
+                    println!("Minimum brightness level is reached (5%)");
                     return Ok(())
                 }else{
                   dev.set(level - percent.percent.unwrap() as u32).await?;
@@ -46,4 +47,15 @@ async fn print_brightness_lelel(dev:BrightnessDevice)->Result<(),brightness::Err
             println!("Brightness of device {} is {}%", device, result);
             Ok(())
 }
+
+async fn set_max_level(mut dev:BrightnessDevice)->Result<(),brightness::Error>{
+            dev.set(100).await?;
+            Ok(())
 }
+
+async fn set_min_level(mut dev:BrightnessDevice)->Result<(),brightness::Error>{
+            dev.set(5).await?;
+            Ok(())
+}
+}
+
