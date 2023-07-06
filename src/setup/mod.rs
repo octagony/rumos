@@ -11,13 +11,13 @@ pub async fn main_launch()->Result<(), Box<dyn Error>>{
             control_funcs::show_brightness().await?;
         }
         Commands::Set(percent) => {
-            control_funcs::control_brightness(percent).await?;
+            control_funcs::set_brightness(percent).await?;
         }
         Commands::Inc(percent) => {
-            println!("Increase the percentage of brightness to {:?}%", percent.percent);
+            control_funcs::increase_or_decrease_brightness(percent, "inc").await?
         }
         Commands::Dec(percent) => {
-            println!("Decrease the percentage of brightness to {:?}%", percent.percent);
+            control_funcs::increase_or_decrease_brightness(percent, "dec").await?
         }
     }
     Ok(())

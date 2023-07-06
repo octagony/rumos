@@ -1,7 +1,7 @@
 [package]
 name = "rumos"
 version = "1.0.0"
-authors = "Octagony <moctagony@gmail.com>"
+authors = ["Octagony <moctagony@gmail.com>"]
 edition = "2021"
 description = "CLI utility for controlling screen brightness"
 keywords = ["system","cli","brightness"]
