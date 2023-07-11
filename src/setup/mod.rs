@@ -1,8 +1,8 @@
 pub mod main_mod{
     use clap::Parser;
     use futures::TryStreamExt;
-    use crate::{args::{Cli, Commands, SetArgs}, funcs::control_funcs::{set_max_level, set_min_level}};
-	use std::{error::Error};
+    use crate::{args::{Cli, Commands}, funcs::control_funcs::{set_max_level, set_min_level}};
+	use std::error::Error;
     use crate::funcs::control_funcs;
 
 // fn validate_percent (percent:&SetArgs)->&SetArgs{
