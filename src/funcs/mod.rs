@@ -29,7 +29,9 @@ pub async fn increase_or_decrease_brightness(percent:&SetArgs, com:&str ) -> Res
                     return Ok(())
                 }
             }else {
-                if dev.get().await? as u8 - percent.percent.unwrap() < 0 {
+                let unwrap_value = percent.percent.unwrap_or(0);
+                let calculate_level = dev.get().await? as u8 - unwrap_value ;
+                if calculate_level < u8::MIN {
                     set_min_level(dev).await?;
                     println!("Minimum brightness level is reached (5%)");
                     return Ok(())
