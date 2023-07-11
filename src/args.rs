@@ -17,7 +17,12 @@ pub enum Commands {
     /// Increase the brightness level (in percent)
     Inc(SetArgs),
     /// Decrease the brightness level (in percent)
-    Dec(SetArgs)
+    Dec(SetArgs),
+    /// Set maximum brightness level
+    Max,
+    /// Set mininum brightness level
+    Min
+
 }
 
 #[derive(Debug, Args)]

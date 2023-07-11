@@ -1,11 +1,18 @@
 pub mod main_mod{
     use clap::Parser;
-    use crate::args::{Cli, Commands};
+    use futures::TryStreamExt;
+    use crate::{args::{Cli, Commands}, funcs::control_funcs::{set_max_level, set_min_level}};
 	use std::error::Error;
     use crate::funcs::control_funcs;
+    use brightness::{BrightnessDevice,brightness_devices};
+
+struct Dev{
+    dev:BrightnessDevice
+}
 
 pub async fn main_launch()->Result<(), Box<dyn Error>>{
     let cli = Cli::parse();
+    let dev = brightness_devices();
     match &cli.command{
         Commands::Get=>{
             control_funcs::show_brightness().await?;
@@ -18,6 +25,18 @@ pub async fn main_launch()->Result<(), Box<dyn Error>>{
         }
         Commands::Dec(percent) => {
             control_funcs::increase_or_decrease_brightness(percent, "dec").await?
+        },
+        Commands::Max=>{
+            brightness::brightness_devices().try_for_each(|dev| async move {
+                set_max_level(dev).await?;
+                Ok(())
+        }).await?
+        }
+        Commands::Min=>{
+            brightness::brightness_devices().try_for_each(|dev| async move {
+                set_min_level(dev).await?;
+                Ok(())
+        }).await?
         }
     }
     Ok(())

@@ -29,7 +29,7 @@ pub async fn increase_or_decrease_brightness(percent:&SetArgs, com:&str ) -> Res
                     return Ok(())
                 }
             }else {
-                if percent.percent.unwrap() > 100{
+                if dev.get().await? as u8 - percent.percent.unwrap() < 0 {
                     set_min_level(dev).await?;
                     println!("Minimum brightness level is reached (5%)");
                     return Ok(())
@@ -48,13 +48,15 @@ async fn print_brightness_lelel(dev:BrightnessDevice)->Result<(),brightness::Err
             Ok(())
 }
 
-async fn set_max_level(mut dev:BrightnessDevice)->Result<(),brightness::Error>{
+pub async fn set_max_level(mut dev:BrightnessDevice)->Result<(),brightness::Error>{
             dev.set(100).await?;
+            print_brightness_lelel(dev).await?;
             Ok(())
 }
 
-async fn set_min_level(mut dev:BrightnessDevice)->Result<(),brightness::Error>{
+pub async fn set_min_level(mut dev:BrightnessDevice)->Result<(),brightness::Error>{
             dev.set(5).await?;
+            print_brightness_lelel(dev).await?;
             Ok(())
 }
 }
