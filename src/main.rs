@@ -6,8 +6,9 @@ mod args;
 mod funcs;
 // Setup
 mod setup;
+//Main
 use setup::main_mod;
 
- fn main() {
+fn main() {
     let _ = executor::block_on(main_mod::main_launch());
 }

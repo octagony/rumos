@@ -14,12 +14,12 @@ pub mod control_funcs {
 
     pub async fn increase_or_decrease_brightness(
         percent: &SetArgs,
-        com: &str,
+        mode: &str,
     ) -> Result<(), brightness::Error> {
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
                 let level = dev.get().await?;
-                if com == "inc" {
+                if mode == "inc" {
                     if level < 100 {
                         dev.set(level + percent.percent.unwrap() as u32).await?;
                     } else {
