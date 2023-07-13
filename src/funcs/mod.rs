@@ -43,7 +43,7 @@ pub async fn increase_or_decrease_brightness(percent:&SetArgs, com:&str ) -> Res
 	}).await
 }
 
-async fn print_brightness_lelel(dev:BrightnessDevice)->Result<(),brightness::Error>{
+pub async fn print_brightness_lelel(dev:BrightnessDevice)->Result<(),brightness::Error>{
             let (device,result) = (dev.device_name().await?,dev.get().await?);
             println!("Brightness of device {} is {}%", device, result);
             Ok(())

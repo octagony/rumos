@@ -1,28 +1,28 @@
 use clap::{Parser, Subcommand};
 
-#[derive(Parser)]
+#[derive(Parser,Debug)]
 #[command(author, version, about, long_about = None)]
 #[command(propagate_version = true)]
 pub struct Cli {
-    /// Do not output the result to console
+    /// Do not output result to console
     #[arg(short, long, value_name = "QUET")]
-    quiet: bool,
-    /// Print only the brightness level(percentage)
+    pub quiet: bool,
+    /// Print only brightness level(percentage)
     #[arg(short, long, value_name = "PERCENT")]
-    percent: bool,
+    pub percent: bool,
     #[command(subcommand)]
     pub command: Commands,
 }
 
 #[derive(Debug, Subcommand)]
 pub enum Commands {
-    /// Get the brightness level (in percent)
+    /// Get brightness level (in percent)
     Get,
-    /// Set the brightness level (in percent)
+    /// Set brightness level (in percent)
     Set(SetArgs),
-    /// Increase the brightness level (in percent)
+    /// Increase brightness level (in percent)
     Inc(SetArgs),
-    /// Decrease the brightness level (in percent)
+    /// Decrease brightness level (in percent)
     Dec(SetArgs),
     /// Set maximum brightness level
     Max,
