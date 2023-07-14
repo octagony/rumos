@@ -23,13 +23,11 @@ pub mod control_funcs {
                     if level < 100 {
                         dev.set(level + percent.percent.unwrap() as u32).await?;
                     } else {
-                        println!("Maximum brightness level is reached (100%)");
                         return Ok(());
                     }
                 } else {
                     let calculate_value = dev.get().await? < (percent.percent.unwrap() as u32 + 5);
                     if calculate_value {
-                        println!("Mininum brightness level is reached (5%)");
                         dev.set(5).await?;
                     } else {
                         dev.set(level - percent.percent.unwrap() as u32).await?;
@@ -44,6 +42,14 @@ pub mod control_funcs {
         let _ = brightness::brightness_devices()
             .try_for_each(|dev| async move {
                 let (device, result) = (dev.device_name().await?, dev.get().await?);
+                if !cli.quiet && !cli.percent{
+                    if result >= 100{
+                        println!("Maximum brightness level reached(100%)")
+                    }
+                    if result < 5{
+                        println!("Minimum brightness level reached(5%)")
+                    }
+                }
                 if cli.percent {
                     println!("{result}%");
                     return Ok(());
@@ -67,4 +73,5 @@ pub mod control_funcs {
         dev.set(5).await?;
         Ok(())
     }
+
 }
