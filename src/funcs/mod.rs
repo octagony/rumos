@@ -1,4 +1,5 @@
 pub mod control_funcs {
+    use colored::*;
     use crate::args::{Cli, SetArgs};
     use brightness::{Brightness, BrightnessDevice};
     use futures::TryStreamExt;
@@ -44,10 +45,12 @@ pub mod control_funcs {
                 let (device, result) = (dev.device_name().await?, dev.get().await?);
                 if !cli.quiet && !cli.percent{
                     if result >= 100{
-                        println!("Maximum brightness level reached(100%)")
+                        println!("{} brightness level reached({})","Maximum".green().bold(),"100%".green().bold());
+                        return Ok(());
                     }
-                    if result < 5{
-                        println!("Minimum brightness level reached(5%)")
+                    if result <= 5{
+                        println!("{} brightness level reached({})","Minimum".red().bold(), "5%".red().bold());
+                        return Ok(());
                     }
                 }
                 if cli.percent {
@@ -57,7 +60,7 @@ pub mod control_funcs {
                 if cli.quiet {
                     return Ok(());
                 }
-                println!("Brightness of device {device} is {result}%");
+                println!("Brightness of device {} is {}", device.blue().bold(), format!("{result}%").yellow().bold());
                 Ok(())
             })
             .await;
