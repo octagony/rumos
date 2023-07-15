@@ -1,10 +1,11 @@
 pub mod main_mod {
+    use std::process::ExitCode;
+
     use crate::args::{Cli, Commands};
     use crate::funcs::control_funcs;
     use brightness::Brightness;
     use clap::Parser;
     use futures::TryStreamExt;
-    use std::process::ExitCode;
 
     pub async fn main_launch() -> Result<(), brightness::Error> {
         let cli = Cli::parse();
@@ -12,16 +13,16 @@ pub mod main_mod {
             Commands::Get => {
                 control_funcs::print_brightness_lelel(cli).await?;
             }
-            Commands::Set(percent) => {
-                control_funcs::set_brightness(percent).await?;
+            Commands::Set(args) => {
+                control_funcs::set_brightness(args).await?;
                 control_funcs::print_brightness_lelel(cli).await?;
             }
-            Commands::Inc(percent) => {
-                control_funcs::increase_or_decrease_brightness(percent, "inc").await?;
+            Commands::Inc(args) => {
+                control_funcs::increase_or_decrease_brightness(args, "inc").await?;
                 control_funcs::print_brightness_lelel(cli).await?;
             }
-            Commands::Dec(percent) => {
-                control_funcs::increase_or_decrease_brightness(percent, "dec").await?;
+            Commands::Dec(args) => {
+                control_funcs::increase_or_decrease_brightness(args, "dec").await?;
                 control_funcs::print_brightness_lelel(cli).await?;
             }
             Commands::Max => {

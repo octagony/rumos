@@ -5,23 +5,11 @@ pub mod control_funcs {
     use futures::TryStreamExt;
     use std::process::ExitCode;
 
-    pub async fn set_brightness(percent: &SetArgs) -> Result<ExitCode, brightness::Error> {
-        let arg_percent = percent.percent.ok_or_else(|| "Specify brighthtness level");
-
-        let arg_percent = match arg_percent {
-            Ok(value) => value as u32,
-            Err(error) => {
-                println!("{}", error.bold());
-                0 as u32
-            }
-        };
+    pub async fn set_brightness(args: &SetArgs) -> Result<ExitCode, brightness::Error> {
+        let arg_percent = args.percent as u32;
 
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
-                if arg_percent < 5 {
-                    dev.set(5).await?;
-                    return Ok(());
-                }
                 let _ = dev.set(arg_percent).await?;
                 Ok(())
             })
@@ -30,18 +18,10 @@ pub mod control_funcs {
     }
 
     pub async fn increase_or_decrease_brightness(
-        percent: &SetArgs,
+        args: &SetArgs,
         mode: &str,
     ) -> Result<ExitCode, brightness::Error> {
-        let arg_percent = percent.percent.ok_or_else(|| "Specify brighthtness level");
-
-        let arg_percent = match arg_percent {
-            Ok(value) => value as u32,
-            Err(error) => {
-                println!("{}", error.bold());
-                0 as u32
-            }
-        };
+        let arg_percent = args.percent as u32;
 
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {

@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-#[derive(Parser,Debug)]
+#[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 #[command(propagate_version = true)]
 pub struct Cli {
@@ -27,12 +27,11 @@ pub enum Commands {
     /// Set maximum brightness level
     Max,
     /// Set mininum brightness level
-    Min
-
+    Min,
 }
 
-#[derive(Debug,Parser)]
+#[derive(Debug, Parser)]
 pub struct SetArgs {
-    #[arg(value_parser = clap::value_parser!(u8).range(0..=100))]
-    pub percent: Option<u8>,
+    #[arg(value_parser = clap::value_parser!(u8).range(5..=100))]
+    pub percent: u8,
 }
