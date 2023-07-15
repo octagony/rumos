@@ -1,7 +1,7 @@
 pub mod control_funcs {
     use colored::*;
     use crate::args::{Cli, SetArgs};
-    use brightness::{Brightness, BrightnessDevice};
+    use brightness::Brightness;
     use futures::TryStreamExt;
 
     pub async fn set_brightness(percent: &SetArgs) -> Result<(), brightness::Error> {
@@ -68,15 +68,4 @@ pub mod control_funcs {
             .await;
         Ok(())
     }
-
-    pub async fn set_max_level(mut dev: BrightnessDevice) -> Result<(), brightness::Error> {
-        dev.set(100).await?;
-        Ok(())
-    }
-
-    pub async fn set_min_level(mut dev: BrightnessDevice) -> Result<(), brightness::Error> {
-        dev.set(5).await?;
-        Ok(())
-    }
-
 }
