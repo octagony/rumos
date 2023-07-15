@@ -5,7 +5,13 @@ pub mod control_funcs {
     use futures::TryStreamExt;
 
     pub async fn set_brightness(percent: &SetArgs) -> Result<(), brightness::Error> {
-        let arg_percent = percent.percent.unwrap() as u32;
+        let arg_percent = percent.percent.unwrap_or_default() as u32;
+
+        if arg_percent == 0 {
+            println!("{}", "Specify a brightness level".bold());
+            return Ok(());
+        }
+
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
                 let _ = dev.set(arg_percent).await?;
@@ -18,7 +24,13 @@ pub mod control_funcs {
         percent: &SetArgs,
         mode: &str,
     ) -> Result<(), brightness::Error> {
-        let arg_percent = percent.percent.unwrap() as u32;
+        let arg_percent = percent.percent.unwrap_or_default() as u32;
+
+        if arg_percent == 0 {
+            println!("{}", "Specify a brightness level".bold());
+            return Ok(());
+        }
+
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
                 let level = dev.get().await?;
