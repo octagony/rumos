@@ -3,33 +3,45 @@ pub mod control_funcs {
     use brightness::Brightness;
     use colored::*;
     use futures::TryStreamExt;
+    use std::process::ExitCode;
 
-    pub async fn set_brightness(percent: &SetArgs) -> Result<(), brightness::Error> {
-        let arg_percent = percent.percent.unwrap_or_default() as u32;
+    pub async fn set_brightness(percent: &SetArgs) -> Result<ExitCode, brightness::Error> {
+        let arg_percent = percent.percent.ok_or_else(|| "Specify brighthtness level");
 
-        if arg_percent == 0 {
-            println!("{}", "Specify a brightness level".bold());
-            return Ok(());
-        }
+        let arg_percent = match arg_percent {
+            Ok(value) => value as u32,
+            Err(error) => {
+                println!("{}", error.bold());
+                0 as u32
+            }
+        };
 
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
+                if arg_percent < 5 {
+                    dev.set(5).await?;
+                    return Ok(());
+                }
                 let _ = dev.set(arg_percent).await?;
                 Ok(())
             })
-            .await
+            .await?;
+        Ok(ExitCode::SUCCESS)
     }
 
     pub async fn increase_or_decrease_brightness(
         percent: &SetArgs,
         mode: &str,
-    ) -> Result<(), brightness::Error> {
-        let arg_percent = percent.percent.unwrap_or_default() as u32;
+    ) -> Result<ExitCode, brightness::Error> {
+        let arg_percent = percent.percent.ok_or_else(|| "Specify brighthtness level");
 
-        if arg_percent == 0 {
-            println!("{}", "Specify a brightness level".bold());
-            return Ok(());
-        }
+        let arg_percent = match arg_percent {
+            Ok(value) => value as u32,
+            Err(error) => {
+                println!("{}", error.bold());
+                0 as u32
+            }
+        };
 
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
@@ -50,10 +62,11 @@ pub mod control_funcs {
                 };
                 Ok(())
             })
-            .await
+            .await?;
+        Ok(ExitCode::SUCCESS)
     }
 
-    pub async fn print_brightness_lelel(cli: Cli) -> Result<(), brightness::Error> {
+    pub async fn print_brightness_lelel(cli: Cli) -> Result<ExitCode, brightness::Error> {
         let _ = brightness::brightness_devices()
             .try_for_each(|dev| async move {
                 let (device, result) = (dev.device_name().await?, dev.get().await?);
@@ -90,6 +103,6 @@ pub mod control_funcs {
                 Ok(())
             })
             .await;
-        Ok(())
+        Ok(ExitCode::SUCCESS)
     }
 }

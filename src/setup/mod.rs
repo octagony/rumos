@@ -4,6 +4,7 @@ pub mod main_mod {
     use brightness::Brightness;
     use clap::Parser;
     use futures::TryStreamExt;
+    use std::process::ExitCode;
 
     pub async fn main_launch() -> Result<(), brightness::Error> {
         let cli = Cli::parse();
