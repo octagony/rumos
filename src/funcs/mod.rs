@@ -5,9 +5,10 @@ pub mod control_funcs {
     use futures::TryStreamExt;
 
     pub async fn set_brightness(percent: &SetArgs) -> Result<(), brightness::Error> {
+        let arg_percent = percent.percent.unwrap() as u32;
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
-                let _ = dev.set(percent.percent.unwrap() as u32).await?;
+                let _ = dev.set(arg_percent).await?;
                 Ok(())
             })
             .await
@@ -17,21 +18,22 @@ pub mod control_funcs {
         percent: &SetArgs,
         mode: &str,
     ) -> Result<(), brightness::Error> {
+        let arg_percent = percent.percent.unwrap() as u32;
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
                 let level = dev.get().await?;
                 if mode == "inc" {
                     if level < 100 {
-                        dev.set(level + percent.percent.unwrap() as u32).await?;
+                        dev.set(level + arg_percent).await?;
                     } else {
                         return Ok(());
                     }
                 } else {
-                    let calculate_value = dev.get().await? < (percent.percent.unwrap() as u32 + 5);
+                    let calculate_value = dev.get().await? < (arg_percent + 5);
                     if calculate_value {
                         dev.set(5).await?;
                     } else {
-                        dev.set(level - percent.percent.unwrap() as u32).await?;
+                        dev.set(level - arg_percent).await?;
                     }
                 };
                 Ok(())
@@ -54,7 +56,7 @@ pub mod control_funcs {
                     }
                 }
                 if cli.percent {
-                    println!("{result}%");
+                    println!("{}",format!("{result}%").yellow().bold());
                     return Ok(());
                 }
                 if cli.quiet {
