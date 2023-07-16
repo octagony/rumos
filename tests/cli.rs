@@ -23,6 +23,17 @@ mod tests {
     }
 
     #[test]
+    fn set_brightness_from_args() -> TestResult {
+        let mut cmd = Command::cargo_bin("rumos").unwrap();
+        let expected = "50";
+        cmd.args(["set", expected])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains(expected));
+        Ok(())
+    }
+
+    #[test]
     fn set_max_brightness() -> TestResult {
         let mut cmd = Command::cargo_bin("rumos").unwrap();
         let expected = "Maximum brightness level reached (100%)\n";

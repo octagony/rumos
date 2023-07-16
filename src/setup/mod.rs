@@ -1,6 +1,4 @@
 pub mod main_mod {
-    use std::process::ExitCode;
-
     use crate::args::{Cli, Commands};
     use crate::funcs::control_funcs;
     use brightness::Brightness;

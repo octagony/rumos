@@ -10,6 +10,10 @@ pub mod control_funcs {
 
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
+                if arg_percent < 5 {
+                    dev.set(5).await?;
+                    return Ok(());
+                }
                 let _ = dev.set(arg_percent).await?;
                 Ok(())
             })
