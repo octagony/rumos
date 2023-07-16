@@ -4,17 +4,23 @@ CLI utility for controlling screen brightness
 
 ## Installation
 
-Build from source
+- Build from source
 
-```bash
-Clone repository
-    git clone https://github.com/octagony/rumos.git
+  ```bash
+  Clone repository
+      git clone https://github.com/octagony/rumos.git
 
-Build project
-    cargo build --release
+  Build project
+      cargo build --release
 
-Find the executable file in target/release
-```
+  Find the executable file in target/release
+  ```
+
+- Use cargo install
+
+  ```bash
+  cargo install rumos
+  ```
 
 ## Usage
 
@@ -59,7 +65,9 @@ Options:
   ```
 
 - (Recipe) Use rumos with dunstify.
+
   - You can find a script to control the brightness level [in my DWM config](https://github.com/octagony/dwm-config-files/blob/master/dwm/scripts/brightnessnotifications.sh). In a simplified version you can use this input
+
   ```bash
   dunstify $(rumos -p get) -t 2000
   ```
