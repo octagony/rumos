@@ -52,7 +52,14 @@ Options:
   // No output
   ```
 - Decrease and display only brightness level in a percentage
+
   ```bash
   rumos -p dec 10
   // 90%
+  ```
+
+- (Recipe) Use rumos with dunstify.
+  - You can find a script to control the brightness level [in my DWM config](https://github.com/octagony/dwm-config-files/blob/master/dwm/scripts/brightnessnotifications.sh). In a simplified version you can use this input
+  ```bash
+  dunstify $(rumos -p get) -t 2000
   ```
