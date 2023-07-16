@@ -1,14 +1,14 @@
 [package]
 name = "rumos"
-version = "1.0.0"
+version = "0.0.5"
 authors = ["Octagony <moctagony@gmail.com>"]
 edition = "2021"
 description = "CLI utility for controlling screen brightness"
 keywords = ["system","cli","brightness"]
+repository = "https://github.com/octagony/rumos"
+license = "MIT"
 readme = "README.md"
 
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 assert_cmd = "2.0.12"
