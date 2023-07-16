@@ -4,7 +4,7 @@ CLI utility for controlling screen brightness
 
 ## Installation
 
-Install my-project with npm
+Build from source
 
 ```bash
 Clone repository
