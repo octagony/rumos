@@ -6,15 +6,13 @@ pub mod control_funcs {
     use std::process::ExitCode;
 
     pub async fn set_brightness(args: &SetArgs) -> Result<ExitCode, brightness::Error> {
-        let arg_percent = args.percent as u32;
-
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
-                if arg_percent < 5 {
+                if args.percent < 5 {
                     dev.set(5).await?;
                     return Ok(());
                 }
-                let _ = dev.set(arg_percent).await?;
+                let _ = dev.set(args.percent).await?;
                 Ok(())
             })
             .await?;
@@ -25,23 +23,22 @@ pub mod control_funcs {
         args: &SetArgs,
         mode: &str,
     ) -> Result<ExitCode, brightness::Error> {
-        let arg_percent = args.percent as u32;
 
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
                 let level = dev.get().await?;
                 if mode == "inc" {
                     if level < 100 {
-                        dev.set(level + arg_percent).await?;
+                        dev.set(level + args.percent).await?;
                     } else {
                         return Ok(());
                     }
                 } else {
-                    let calculate_value = dev.get().await? < (arg_percent + 5);
+                    let calculate_value = dev.get().await? < (args.percent + 5);
                     if calculate_value {
                         dev.set(5).await?;
                     } else {
-                        dev.set(level - arg_percent).await?;
+                        dev.set(level - args.percent).await?;
                     }
                 };
                 Ok(())

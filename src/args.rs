@@ -32,6 +32,6 @@ pub enum Commands {
 
 #[derive(Debug, Parser)]
 pub struct SetArgs {
-    #[arg(value_parser = clap::value_parser!(u8).range(0..=100))]
-    pub percent: u8,
+    #[arg(value_parser = clap::value_parser!(u32).range(0..=100))]
+    pub percent: u32,
 }
