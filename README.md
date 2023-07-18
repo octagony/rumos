@@ -2,6 +2,8 @@
 
 CLI utility for controlling screen brightness
 
+[![asciicast](https://asciinema.org/a/BMPA2AsNL2k22ydjL5yQhCUxT.svg)](https://asciinema.org/a/BMPA2AsNL2k22ydjL5yQhCUxT)
+
 ## Installation
 
 - Build from source
@@ -66,7 +68,7 @@ Options:
 
 - (Recipe) Use rumos with dunstify.
 
-  - You can find a script to control the brightness level [in my DWM config](https://github.com/octagony/dwm-config-files/blob/master/dwm/scripts/brightnessnotifications.sh). In a simplified version you can use this input
+  You can find a script to control the brightness level [in my DWM config](https://github.com/octagony/dwm-config-files/blob/master/dwm/scripts/brightnessnotifications.sh). In a simplified version you can use this input
 
   ```bash
   dunstify $(rumos -p get) -t 2000
