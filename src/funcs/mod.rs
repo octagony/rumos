@@ -72,11 +72,11 @@ pub mod control_funcs {
                         return Ok(());
                     }
                 }
-                if cli.percent {
-                    println!("{}", format!("{result}%").yellow().bold());
+                if cli.quiet {
                     return Ok(());
                 }
-                if cli.quiet {
+                if cli.percent {
+                    println!("{}", format!("{result}%").yellow().bold());
                     return Ok(());
                 }
                 println!(
