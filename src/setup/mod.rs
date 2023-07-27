@@ -6,7 +6,6 @@ pub mod main_mod {
     use futures::TryStreamExt;
     use crate::enums::BrightMode;
 
-
     pub async fn main_launch() -> Result<(), brightness::Error> {
         let cli = Cli::parse();
         match &cli.command {

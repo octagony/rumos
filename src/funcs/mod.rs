@@ -47,28 +47,6 @@ pub mod control_funcs {
             Ok(())
         }).await?;
         Ok(ExitCode::SUCCESS)
-
-        /* brightness::brightness_devices()
-            .try_for_each(|mut dev| async move {
-                let level = dev.get().await?;
-                if mode == "inc" {
-                    if level < 100 {
-                        dev.set(level + args.percent).await?;
-                    } else {
-                        return Ok(());
-                    }
-                } else {
-                    let calculate_value = dev.get().await? < (args.percent + 5);
-                    if calculate_value {
-                        dev.set(5).await?;
-                    } else {
-                        dev.set(level - args.percent).await?;
-                    }
-                };
-                Ok(())
-            })
-            .await?;
-        Ok(ExitCode::SUCCESS) */
     }
 
     pub async fn print_brightness_lelel(cli: Cli) -> Result<ExitCode, brightness::Error> {
