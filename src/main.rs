@@ -4,6 +4,8 @@ use futures::executor;
 mod args;
 // Funcs
 mod funcs;
+// Args
+mod enums;
 // Setup
 mod setup;
 //Main

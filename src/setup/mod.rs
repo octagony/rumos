@@ -4,6 +4,8 @@ pub mod main_mod {
     use brightness::Brightness;
     use clap::Parser;
     use futures::TryStreamExt;
+    use crate::enums::BrightMode;
+
 
     pub async fn main_launch() -> Result<(), brightness::Error> {
         let cli = Cli::parse();
@@ -16,11 +18,11 @@ pub mod main_mod {
                 control_funcs::print_brightness_lelel(cli).await?;
             }
             Commands::Inc(args) => {
-                control_funcs::increase_or_decrease_brightness(args, "inc").await?;
+                control_funcs::increase_or_decrease_brightness(args, &BrightMode::Increase).await?;
                 control_funcs::print_brightness_lelel(cli).await?;
             }
             Commands::Dec(args) => {
-                control_funcs::increase_or_decrease_brightness(args, "dec").await?;
+                control_funcs::increase_or_decrease_brightness(args, &BrightMode::Decrease).await?;
                 control_funcs::print_brightness_lelel(cli).await?;
             }
             Commands::Max => {
