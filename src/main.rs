@@ -1,7 +1,6 @@
 // Constants
 mod constants;
 // Executor
-use futures::executor;
 // Args
 mod args;
 // Funcs
@@ -11,8 +10,9 @@ mod enums;
 // Setup
 mod setup;
 
-fn main() {
-    if let Err(e) = executor::block_on(setup::main_mod::main_launch()) {
+#[tokio::main]
+async fn main() {
+    if let Err(e) = setup::main_mod::main_launch().await {
         eprintln!("Error: {}", e);
         std::process::exit(1);
     }
