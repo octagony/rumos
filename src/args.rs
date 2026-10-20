@@ -5,7 +5,7 @@ use clap::{Parser, Subcommand};
 #[command(propagate_version = true)]
 pub struct Cli {
     /// Do not output result to console
-    #[arg(short, long, value_name = "QUET")]
+    #[arg(short, long, value_name = "QUIET")]
     pub quiet: bool,
     /// Print only brightness level(percentage)
     #[arg(short, long, value_name = "PERCENT")]

@@ -1,16 +1,17 @@
 pub mod control_funcs {
     use crate::args::{Cli, SetArgs};
+    use crate::constants::{MAX_SAFE_BRIGHTNESS, MIN_SAFE_BRIGHTNESS};
+    use crate::enums::BrightMode;
     use brightness::Brightness;
     use colored::*;
     use futures::TryStreamExt;
     use std::process::ExitCode;
-    use crate::enums::BrightMode;
 
     pub async fn set_brightness(args: &SetArgs) -> Result<ExitCode, brightness::Error> {
         brightness::brightness_devices()
             .try_for_each(|mut dev| async move {
-                if args.percent < 5 {
-                    dev.set(5).await?;
+                if args.percent < MIN_SAFE_BRIGHTNESS {
+                    dev.set(MIN_SAFE_BRIGHTNESS).await?;
                     return Ok(());
                 }
                 let _ = dev.set(args.percent).await?;
@@ -24,37 +25,39 @@ pub mod control_funcs {
         args: &SetArgs,
         mode: &BrightMode,
     ) -> Result<ExitCode, brightness::Error> {
-
-        brightness::brightness_devices().try_for_each(|mut dev| async move{
-            let level = dev.get().await?;
-            match mode{
-                BrightMode::Increase=>{
-                    if level < 100 {
-                        dev.set(level+args.percent).await?;
-                    }else{
-                        return Ok(())
+        brightness::brightness_devices()
+            .try_for_each(|mut dev| async move {
+                let level = dev.get().await?;
+                match mode {
+                    BrightMode::Increase => {
+                        if level < MAX_SAFE_BRIGHTNESS {
+                            dev.set(level + args.percent).await?;
+                        } else {
+                            return Ok(());
+                        }
+                    }
+                    BrightMode::Decrease => {
+                        let calculate_value =
+                            dev.get().await? < (args.percent + MIN_SAFE_BRIGHTNESS);
+                        if calculate_value {
+                            dev.set(MIN_SAFE_BRIGHTNESS).await?;
+                        } else {
+                            dev.set(level - args.percent).await?;
+                        }
                     }
                 }
-                    BrightMode::Decrease=>{
-                    let calculate_value = dev.get().await? < (args.percent + 5);
-                    if calculate_value {
-                        dev.set(5).await?;
-                    } else {
-                        dev.set(level - args.percent).await?;
-                    }
-                    }
-            }
-            Ok(())
-        }).await?;
+                Ok(())
+            })
+            .await?;
         Ok(ExitCode::SUCCESS)
     }
 
-    pub async fn print_brightness_lelel(cli: Cli) -> Result<ExitCode, brightness::Error> {
+    pub async fn print_brightness_level(cli: Cli) -> Result<ExitCode, brightness::Error> {
         let _ = brightness::brightness_devices()
             .try_for_each(|dev| async move {
                 let (device, result) = (dev.device_name().await?, dev.get().await?);
                 if !cli.quiet && !cli.percent {
-                    if result >= 100 {
+                    if result >= MAX_SAFE_BRIGHTNESS {
                         println!(
                             "{} brightness level reached ({})",
                             "Maximum".green().bold(),
@@ -62,7 +65,7 @@ pub mod control_funcs {
                         );
                         return Ok(());
                     }
-                    if result <= 5 {
+                    if result <= MIN_SAFE_BRIGHTNESS {
                         println!(
                             "{} brightness level reached ({})",
                             "Minimum".red().bold(),

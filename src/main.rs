@@ -1,3 +1,5 @@
+// Constants
+mod constants;
 // Executor
 use futures::executor;
 // Args
@@ -8,9 +10,10 @@ mod funcs;
 mod enums;
 // Setup
 mod setup;
-//Main
-use setup::main_mod;
 
 fn main() {
-    let _ = executor::block_on(main_mod::main_launch());
+    if let Err(e) = executor::block_on(setup::main_mod::main_launch()) {
+        eprintln!("Error: {}", e);
+        std::process::exit(1);
+    }
 }
