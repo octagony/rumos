@@ -2,7 +2,7 @@
 
 CLI utility for controlling screen brightness
 
-[![asciicast](https://asciinema.org/a/BMPA2AsNL2k22ydjL5yQhCUxT.svg)](https://asciinema.org/a/BMPA2AsNL2k22ydjL5yQhCUxT)
+![Demo preview](demo.gif)
 
 ## Installation
 
@@ -55,7 +55,6 @@ Options:
   rumos -p get
   // 100%
   ```
-
 - Set the maximum brightness level quietly
   ```bash
   rumos max -q
@@ -66,20 +65,17 @@ Options:
   ```bash
   rumos -p dec 10
   // 90%
-
 - Get list of devices
 
   ```bash
   rumos list
   // -> intel_backlight (current: 100)
-  // -> nvidia (current: 100);
-
+  // -> nvidia (current: 100)
 - Set brightness level to target device
 
   ```bash
   rumos -d intel_backlight set 80
   // intel_backlight: 80
-
 - (Recipe) Use rumos with dunstify.
 
   You can find a script to control the brightness level [in my DWM config](https://github.com/octagony/dwm-config-files/blob/master/dwm/scripts/brightnessnotifications.sh). In a simplified version you can use this input
