@@ -7,7 +7,7 @@ mod tests {
 
     fn mock_cmd() -> Command {
         let mut cmd = Command::cargo_bin("rumos").unwrap();
-        cmd.env("RUMOS_TEST_MOCK", "1"); 
+        cmd.env("RUMOS_TEST_MOCK", "1");
         cmd
     }
 
@@ -87,6 +87,26 @@ mod tests {
             .assert()
             .success()
             .stdout(predicate::str::contains("10"));
+        Ok(())
+    }
+
+    #[test]
+    fn list_devices() -> TestResult {
+        let mut cmd = mock_cmd();
+        cmd.arg("list")
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("Mock devices"));
+        Ok(())
+    }
+
+    #[test]
+    fn get_with_devices() -> TestResult {
+        let mut cmd = mock_cmd();
+        cmd.args(["-d", "intel_backlight", "get"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("50"));
         Ok(())
     }
 }

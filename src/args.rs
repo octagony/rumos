@@ -10,6 +10,9 @@ pub struct Cli {
     /// Print only brightness level(percentage)
     #[arg(short, long, value_name = "PERCENT")]
     pub percent: bool,
+    /// Change brightness on a specific device (use 'list' to available devices)
+    #[arg(short = 'd', long, value_name = "DEVICE")]
+    pub device: Option<String>,
     #[command(subcommand)]
     pub command: Commands,
 }
@@ -28,6 +31,8 @@ pub enum Commands {
     Max,
     /// Set mininum brightness level
     Min,
+    /// List all available brightness devices
+    List,
 }
 
 #[derive(Debug, Parser)]

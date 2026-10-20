@@ -3,15 +3,12 @@ pub mod main_mod {
     use crate::constants::{MAX_SAFE_BRIGHTNESS, MIN_SAFE_BRIGHTNESS};
     use crate::enums::BrightMode;
     use crate::funcs::control_funcs;
-    use brightness::Brightness;
     use clap::Parser;
-    use futures::TryStreamExt;
 
     pub async fn main_launch() -> Result<(), brightness::Error> {
         let cli = Cli::parse();
 
         let is_mock = std::env::var("RUMOS_TEST_MOCK").unwrap_or_default() == "1";
-
         if is_mock {
             if !cli.quiet {
                 let output = match &cli.command {
@@ -21,8 +18,12 @@ pub mod main_mod {
                     Commands::Dec(args) => args.percent.to_string(),
                     Commands::Max => MAX_SAFE_BRIGHTNESS.to_string(),
                     Commands::Min => MIN_SAFE_BRIGHTNESS.to_string(),
+                    Commands::List => "
+                    Mock devices:\n
+                    - intel_backlight (50)\n
+                    - nvidia (50)"
+                        .to_string(),
                 };
-
                 if cli.percent {
                     println!("{}%", output);
                 } else {
@@ -33,38 +34,33 @@ pub mod main_mod {
         }
 
         match &cli.command {
+            Commands::List => {
+                control_funcs::list_devices().await?;
+            }
             Commands::Get => {
-                control_funcs::print_brightness_level(cli).await?;
+                control_funcs::print_brightness_level(&cli).await?;
             }
             Commands::Set(args) => {
-                control_funcs::set_brightness(args).await?;
-                control_funcs::print_brightness_level(cli).await?;
+                control_funcs::set_brightness(args, &cli).await?;
+                control_funcs::print_brightness_level(&cli).await?;
             }
             Commands::Inc(args) => {
-                control_funcs::increase_or_decrease_brightness(args, &BrightMode::Increase).await?;
-                control_funcs::print_brightness_level(cli).await?;
+                control_funcs::increase_or_decrease_brightness(args, &BrightMode::Increase, &cli)
+                    .await?;
+                control_funcs::print_brightness_level(&cli).await?;
             }
             Commands::Dec(args) => {
-                control_funcs::increase_or_decrease_brightness(args, &BrightMode::Decrease).await?;
-                control_funcs::print_brightness_level(cli).await?;
+                control_funcs::increase_or_decrease_brightness(args, &BrightMode::Decrease, &cli)
+                    .await?;
+                control_funcs::print_brightness_level(&cli).await?;
             }
             Commands::Max => {
-                brightness::brightness_devices()
-                    .try_for_each(|mut dev| async move {
-                        let _ = dev.set(MAX_SAFE_BRIGHTNESS).await?;
-                        Ok(())
-                    })
-                    .await?;
-                control_funcs::print_brightness_level(cli).await?;
+                control_funcs::set_filtered_devices(&cli, MAX_SAFE_BRIGHTNESS).await?;
+                control_funcs::print_brightness_level(&cli).await?;
             }
             Commands::Min => {
-                brightness::brightness_devices()
-                    .try_for_each(|mut dev| async move {
-                        dev.set(MIN_SAFE_BRIGHTNESS).await?;
-                        Ok(())
-                    })
-                    .await?;
-                control_funcs::print_brightness_level(cli).await?;
+                control_funcs::set_filtered_devices(&cli, MIN_SAFE_BRIGHTNESS).await?;
+                control_funcs::print_brightness_level(&cli).await?;
             }
         }
         Ok(())

@@ -36,11 +36,13 @@ Commands:
   dec   Decrease brightness level (in percent)
   max   Set maximum brightness level
   min   Set mininum brightness level
+  list  List all available brightness devices
   help  Print this message or the help of the given subcommand(s)
 
 Options:
   -q, --quiet    Do not output result to console
   -p, --percent  Print only brightness level(percentage)
+  -d, --device   Print only brightness level(percentage)
   -h, --help     Print help
   -V, --version  Print version
 ```
@@ -64,7 +66,19 @@ Options:
   ```bash
   rumos -p dec 10
   // 90%
-  ```
+
+- Get list of devices
+
+  ```bash
+  rumos list
+  // -> intel_backlight (current: 100)
+  // -> nvidia (current: 100);
+
+- Set brightness level to target device
+
+  ```bash
+  rumos -d intel_backlight set 80
+  // intel_backlight: 80
 
 - (Recipe) Use rumos with dunstify.
 
