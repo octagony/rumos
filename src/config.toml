@@ -1,0 +1,10 @@
+# Available colors: black, red, green, yellow, blue, magenta, cyan, white (also supports bright_{color} bright_black, bright_red, etc.)
+# Available styles: bold, italic, underline
+
+# Device name styling
+device_font_color = "cyan"
+device_font_style = "bold"
+
+# Brightness percentage styling
+percent_font_color = "yellow"
+percent_font_style = "bold"

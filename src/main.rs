@@ -9,6 +9,8 @@ mod funcs;
 mod enums;
 // Setup
 mod setup;
+// Config
+mod config;
 
 #[tokio::main]
 async fn main() {
