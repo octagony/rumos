@@ -11,7 +11,7 @@ pub fn apply_style(text: &str, color_str: &Option<String>, style_str: &Option<St
 
     let mut colored_text = text.color(color);
 
-   if let Some(style_str) = style_str {
+    if let Some(style_str) = style_str {
         colored_text = match style_str.to_lowercase().as_str() {
             FONT_STYLE_TYPE_BOLD => colored_text.bold(),
             FONT_STYLE_TYPE_ITALIC => colored_text.italic(),

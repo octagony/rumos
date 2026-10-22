@@ -1,7 +1,7 @@
+use crate::constants::DEFAULT_CONFIG;
 use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
-use crate::constants::{DEFAULT_CONFIG};
 
 #[derive(Deserialize, Clone, Default)]
 pub struct RumosConfig {
@@ -14,14 +14,17 @@ pub struct RumosConfig {
 impl RumosConfig {
     pub fn load() -> Self {
         let config_path = Self::get_config_path();
-        
+
         if !config_path.exists() {
             if let Err(e) = Self::create_default_config(&config_path) {
-                eprintln!("Сould not create default config at {:?}: {}", config_path, e);
+                eprintln!(
+                    "Сould not create default config at {:?}: {}",
+                    config_path, e
+                );
                 return Self::default();
             }
         }
-        
+
         match fs::read_to_string(&config_path) {
             Ok(content) => toml::from_str::<Self>(&content).unwrap_or_default(),
             Err(_) => Self::default(),
@@ -32,9 +35,9 @@ impl RumosConfig {
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
         }
-        
+
         fs::write(path, DEFAULT_CONFIG)?;
-        
+
         Ok(())
     }
 

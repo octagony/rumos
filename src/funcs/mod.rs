@@ -1,6 +1,6 @@
 pub mod control_funcs {
     use crate::args::{Cli, SetArgs};
-    use crate::config::{RumosConfig, apply_style};
+    use crate::config::{apply_style, RumosConfig};
     use crate::enums::BrightMode;
     use brightness::Brightness;
     use colored::*;
