@@ -1,5 +1,6 @@
 pub mod control_funcs {
     use crate::args::{Cli, SetArgs};
+    use crate::config::{RumosConfig, apply_style};
     use crate::enums::BrightMode;
     use brightness::Brightness;
     use colored::*;
@@ -18,7 +19,7 @@ pub mod control_funcs {
                         return Ok(());
                     }
                 }
-                dev.set(args.percent).await?;
+                dev.set(args.level).await?;
                 Ok(())
             })
             .await
@@ -43,8 +44,8 @@ pub mod control_funcs {
                 }
                 if let Ok(current) = dev.get().await {
                     let new_value = match mode {
-                        BrightMode::Increase => (current + args.percent).min(100),
-                        BrightMode::Decrease => current.saturating_sub(args.percent),
+                        BrightMode::Increase => (current + args.level).min(100),
+                        BrightMode::Decrease => current.saturating_sub(args.level),
                     };
                     dev.set(new_value).await?;
                 }
@@ -53,7 +54,10 @@ pub mod control_funcs {
             .await
     }
 
-    pub async fn print_brightness_level(cli: &Cli) -> Result<(), brightness::Error> {
+    pub async fn print_brightness_level(
+        cli: &Cli,
+        config: &RumosConfig,
+    ) -> Result<(), brightness::Error> {
         let mut stream = brightness::brightness_devices();
         let mut found = false;
 
@@ -80,14 +84,26 @@ pub mod control_funcs {
                         .device_name()
                         .await
                         .unwrap_or_else(|_| "unknown".to_string());
+
                     if cli.percent {
-                        println!("{}", current.to_string().yellow().bold());
-                    } else {
-                        println!(
-                            "{}: {}",
-                            name.blue().bold(),
-                            current.to_string().yellow().bold()
+                        let styled_percent = apply_style(
+                            &current.to_string(),
+                            &config.percent_font_color,
+                            &config.percent_font_style,
                         );
+                        println!("{}", styled_percent);
+                    } else {
+                        let styled_name = apply_style(
+                            &name,
+                            &config.device_font_color,
+                            &config.device_font_style,
+                        );
+                        let styled_percent = apply_style(
+                            &current.to_string(),
+                            &config.percent_font_color,
+                            &config.percent_font_style,
+                        );
+                        println!("{}: {}", styled_name, styled_percent);
                     }
                 }
                 found = true;
@@ -96,7 +112,7 @@ pub mod control_funcs {
 
         if !found && !cli.quiet {
             if let Some(ref target) = cli.device {
-                eprintln!("Device '{}' not found", target.blue().bold());
+                eprintln!("Device '{}' not found", target.red().bold());
             } else {
                 eprintln!("No brightness devices found");
             }

@@ -109,4 +109,24 @@ mod tests {
             .stdout(predicate::str::contains("50"));
         Ok(())
     }
+
+    #[test]
+    fn flags_before_command_work() -> TestResult {
+        let mut cmd = mock_cmd();
+        cmd.args(["-p", "get"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("%"));
+        Ok(())
+    }
+
+    #[test]
+    fn flags_after_command_work() -> TestResult {
+        let mut cmd = mock_cmd();
+        cmd.args(["get", "-p"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("%"));
+        Ok(())
+    }
 }

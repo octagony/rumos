@@ -5,13 +5,13 @@ use clap::{Parser, Subcommand};
 #[command(propagate_version = true)]
 pub struct Cli {
     /// Do not output result to console
-    #[arg(short, long, value_name = "QUIET")]
+    #[arg(short, long, value_name = "QUIET", global = true)]
     pub quiet: bool,
     /// Print only brightness level(percentage)
-    #[arg(short, long, value_name = "PERCENT")]
+    #[arg(short, long, value_name = "PERCENT", global = true)]
     pub percent: bool,
     /// Change brightness on a specific device (use 'list' to available devices)
-    #[arg(short = 'd', long, value_name = "DEVICE")]
+    #[arg(short = 'd', long, value_name = "DEVICE", global = true)]
     pub device: Option<String>,
     #[command(subcommand)]
     pub command: Commands,
@@ -37,6 +37,6 @@ pub enum Commands {
 
 #[derive(Debug, Parser)]
 pub struct SetArgs {
-    #[arg(value_parser = clap::value_parser!(u32).range(0..=100))]
-    pub percent: u32,
+    #[arg(value_name = "LEVEL", value_parser = clap::value_parser!(u32).range(0..=100))]
+    pub level: u32,
 }
